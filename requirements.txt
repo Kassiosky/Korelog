@@ -1,0 +1,8 @@
+pygetwindow
+mss
+requests
+sqlite3
+matplotlib
+python-telegram-bot
+pywinauto
+README.md
