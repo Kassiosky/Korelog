@@ -175,8 +175,11 @@ def log_item(item, quantidade):
 
 
 # ========= MONITORAMENTO DO LOG =========
+print (f'🎒 Monitor Iniciado..')
 
 def monitor_log():
+    asyncio.run(send_telegram(' ✅ Monitor Iniciado.  ✅'))
+
     with open(LOG_FILE, "r", encoding="utf-8", errors="ignore") as f:
         f.seek(0, 2)  # Vai para o final do arquivo
 
@@ -193,7 +196,7 @@ def monitor_log():
                 continue
 
             line = line.strip()
-            print(line)
+            #print(line)
 
             match_item = re.search(r"Item adicionado ao inventário: (.+)", line)
             if match_item:
@@ -256,6 +259,25 @@ def monitor_log():
 
 
 # ========= LOOP DE SCREENSHOT =========
+async def itens(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    cursor.execute("""
+        SELECT item, SUM(quantidade) as total
+        FROM item_log
+        GROUP BY item
+        ORDER BY total DESC
+        LIMIT 20
+    """)
+    itens = cursor.fetchall()
+
+    if not itens:
+        await update.message.reply_text("Nenhum item coletado até agora.")
+        return
+
+    mensagem = "*🎒 Itens coletados:*\n"
+    for item, quantidade in itens:
+        mensagem += f"• {item} x{quantidade}\n"
+
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=mensagem, parse_mode="Markdown")
 
 def screenshot_loop():
     while True:
@@ -279,8 +301,11 @@ async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"✨ Base XP: {base_xp} (+{base_percent:.2f}%)\n"
             f"✨ Job XP: {job_xp} (+{job_percent:.2f}%)\n"
         )
+
     else:
         texto = "*Status Atual*\nNenhum dado de XP encontrado."
+    print(texto)
+
 
     await context.bot.send_message(chat_id=update.effective_chat.id, text=texto, parse_mode="Markdown")
 
@@ -323,6 +348,7 @@ def main():
     application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
     application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("itens", itens))
     application.add_handler(CommandHandler("status", status))
     application.add_handler(CommandHandler("comando", comando))
 
