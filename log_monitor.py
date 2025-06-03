@@ -251,6 +251,7 @@ def monitor_log():
 
                 if base_xp_total > 0 or job_xp_total > 0 or itens_coletados:
                     asyncio.run(send_telegram(relatorio))
+                print (relatorio)
 
                 base_xp_total = 0
                 job_xp_total = 0
@@ -276,7 +277,7 @@ async def itens(update: Update, context: ContextTypes.DEFAULT_TYPE):
     mensagem = "*🎒 Itens coletados:*\n"
     for item, quantidade in itens:
         mensagem += f"• {item} x{quantidade}\n"
-
+    print (f'❇️ Lista de itens solicitado via Telegram')
     await context.bot.send_message(chat_id=update.effective_chat.id, text=mensagem, parse_mode="Markdown")
 
 def screenshot_loop():
@@ -304,7 +305,7 @@ async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     else:
         texto = "*Status Atual*\nNenhum dado de XP encontrado."
-    print(texto)
+    print('❇️ Status solicitado via Telegram')
 
 
     await context.bot.send_message(chat_id=update.effective_chat.id, text=texto, parse_mode="Markdown")
@@ -331,6 +332,7 @@ async def comando(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     comando = " ".join(context.args)
     sucesso = send_command_to_openkore(comando)
+    print (f'❇️ Comando solicitado via Telegram')
     if sucesso:
         await update.message.reply_text(f"Comando enviado: {comando}")
     else:
