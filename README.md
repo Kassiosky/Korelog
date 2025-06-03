@@ -29,4 +29,4 @@ Este projeto é uma ferramenta de monitoramento que lê os logs do **OpenKore**,
 
 3. Configure os tokens/RoomID no arquivo config.py
 
-4. Após o openkore estar rodando execute o arquivo [ log_monitor.py ] 
+4. Após o openkore estar rodando execute o arquivo [ start_log.bat ] 
